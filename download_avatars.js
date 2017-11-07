@@ -13,8 +13,17 @@ function getRepoContributors(repoOwner, repoName, cb) {
   };
 
   request(options, function(err, res, body) {
-    cb(err, body);
+    const bodyObj = JSON.parse(body);
+    let avatarArr = [];
+    bodyObj.forEach(function(user) {
+      avatarArr.push(user.avatar_url);
+    });
+    cb(err, avatarArr);
   });
+}
+
+function downloadImageByURL(url, filePath) {
+  // ...
 }
 
 getRepoContributors("jquery", "jquery", function(err, result) {
