@@ -1,8 +1,8 @@
 //doing my package requires
-var request = require('request');
-var token = require('./secret');
-var fs = require('fs');
-var path = require('path');
+const request = require('request');
+const token = require('./secret');
+const fs = require('fs');
+const path = require('path');
 
 //breif welcome so user knows things started well
 console.log('Welcome to the GitHub Avatar Downloader!');
@@ -18,6 +18,7 @@ function ensureDirectoryExistence(filePath) {
   }
   ensureDirectoryExistence(dirname);
   fs.mkdirSync(dirname);
+  console.log('a folder named avatar has been created at ./');
 }
 
 /**. This function will first check if the user has entered two strings repoOwner & repoName.
@@ -32,7 +33,7 @@ function ensureDirectoryExistence(filePath) {
 function getRepoContributors(repoOwner, repoName, cb) {
   //if statements checks for two inputs from user
   if (!process.argv[2] || !process.argv[3]){
-    console.error('You did not pass me repoOwner and repoName');
+    console.error('You did not correctly call this program.  Please try against using the "node download_avatars.js <repoOwner> <repoName>" format.  Goodbye! ');
     return;
   }
 
@@ -44,11 +45,12 @@ function getRepoContributors(repoOwner, repoName, cb) {
     }
   };
 
+
   request(options, function(err, res, body) {
     //parses the string into an array
     const bodyObj = JSON.parse(body);
     let avatarArr = [];
-    //goes through the array and pushes the avatar url to avatarArr
+    // goes through the array and pushes the avatar url to avatarArr
     bodyObj.forEach(function(user) {
       avatarArr.push(user.avatar_url);
     //calls downloadImageByUrl giving it the ulr and filepath
@@ -66,7 +68,7 @@ function getRepoContributors(repoOwner, repoName, cb) {
  */
 function downloadImageByURL(url, filePath) {
   //check is the directory /avatars exists in current dir
- ensureDirectoryExistence(filePath);
+  ensureDirectoryExistence(filePath);
   request.get(url)
         .on('error', function (err) {
          throw err;
@@ -76,6 +78,4 @@ function downloadImageByURL(url, filePath) {
 
 //calling the getRepoContributors function
 getRepoContributors(process.argv[2], process.argv[3], function(err, result) {
-  console.log("Errors:", err);
-  console.log("Result:", result);
 });
